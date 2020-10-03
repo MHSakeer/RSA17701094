@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RSA Calculator</title>
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+  <link href="https://fonts.googleapis.com/css2?family=Teko:wght@400;600&display=swap" rel="stylesheet">
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet"> 
+
+</head>
+<body>
+<style>
+  html,body{
+  margin: 0;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  font-family: 'Teko','Poppins';
+}
+</style>
+<header>
+  <div class="main">
+    <div class="container">
+      <div class="row">
+          <div class="col-lg-12 pt-4 text-center services-title">
+            <h1 class="text-uppercase title-text">RSA Calculator</h1>
+          </div>
+          <div class="col-lg-12 pt-2 text-center services-title">
+            <h2 class="text-uppercase title-text">17701094</h2>
+          </div>
+        </div>
+      <div class="jumbotron">
+        <h2 class="text-center">Key Generation</h2>
+        <h3>INPUT TWO PRIME NUMBERS P & Q </h3>
+        <p>Prime in between 17 and 100</p>
+        <div class="row">
+          <div class="col">
+            <div>
+              <input class="form-control mx-sm-3 mb-2"  type="number" step="1" id="p" name="p" min="10" max="100" placeholder="Input P:">
+            </div>
+          </div>
+          <div class="col">
+            <div>
+              <input class="form-control mx-sm-3 mb-2"  type="number" step="1" id="q" name="q" min="10" max="100" placeholder="Input Q:">
+            </div>
+          </div>
+        </div>
+        <div class="text-center pt-2"><button class="btn btn-success" onclick="generate()">Key Generate</button></div>
+        <div class="row pt-2">
+          <div class="col">
+            <div>
+              <input class="form-control mx-sm-3 mb-2" type="number" id="n" name="n" readonly="true" placeholder="Input N:">
+            </div>
+          </div>
+          <div class="col">
+            <div>
+              <input class="form-control mx-sm-3 mb-2" type="number" id="phi" name="phi" readonly="true" placeholder="Input Phi(n):">
+            </div>
+          </div>
+        </div>
+          <div class="row pt-2">
+          <div class="col">
+            <div>
+            <input class="form-control mx-sm-3 mb-2" type="number" id="e" name="e" readonly="true" placeholder="Input E:">
+            </div>
+          </div>
+          <div class="col">
+            <div>
+            <input class="form-control mx-sm-3 mb-2" type="number" id="d" name="d" readonly="true" placeholder="Input D:">
+            </div>
+          </div>
+        </div>
+        <div class="row pt-2">
+          <div class="col">
+           <div>
+            <label for="pub">Public Key Pair:</label>
+            <input class="form-control mx-sm-3 mb-2"  id="pub" name="pub" readonly="true">
+          </div>
+          </div>
+          <div class="col">
+            <div>
+            <label for="pri">Private Key Pair:</label>
+            <input class="form-control mx-sm-3 mb-2" id="pri" name="pri" readonly="true">
+            </div>
+          </div>
+        </div>
+        <hr>
+        <h2 class="text-center">Encrytion Test</h2>
+        <div class="row pt-2">
+          <div class="col">
+           <div>
+            <label for="ins">Input(ASCII lowercase character only):</label>
+            <input class="form-control mx-sm-3 mb-2" id="ins" name="ins">
+          </div>
+          <div><button class="btn btn-success" onclick="enc()">Encrypt</button></div>
+          <div>
+            <label for="en">Encrypted:</label>
+            <input class="form-control mx-sm-3 mb-2" id="en" name="en" readonly="true">
+          </div>
+          </div>
+        </div>
+        <hr>
+        <h2 class="text-center">Decryption Test</h2>
+        <div class="col">
+           <div>
+            <label for="ind">Input(To Decrypt):</label>
+            <input class="form-control mx-sm-3 mb-2" id="ind" name="ind">
+          </div>
+          <div><button class="btn btn-success" onclick="dec()">Decrypt</button></div>
+         <div>
+          <label for="de">Decrypted:</label>
+          <input class="form-control mx-sm-3 mb-2" id="de" name="de" readonly="true">
+        </div>
+          </div>
+
+
+    </div>
+  </div>
+</header>
+  <!-- Code for RSA -->
+<script>
+function enc(){
+  let ins=document.getElementById("ins").value;
+  let res="";
+  let n=document.getElementById("n").value;
+  let e=document.getElementById("e").value;
+  for(var i=0;i<ins.length;i++){
+    let c=ex_mod(ins[i].charCodeAt(0)-'a'.charCodeAt(0),e,n);
+    console.debug(c);
+    let ch=String.fromCharCode(c+'a'.charCodeAt(0));
+    res=res+ch;
+  }
+  document.getElementById("en").value=res;
+}
+</script>
+
+<script>
+function dec(){
+  let ind=document.getElementById("ind").value;
+  let res="";
+  let n=document.getElementById("n").value;
+  let d=document.getElementById("d").value;
+  for(var i=0;i<ind.length;i++){
+    let c=ex_mod(ind[i].charCodeAt(0)-'a'.charCodeAt(0),d,n);
+    console.debug(c);
+    let ch=String.fromCharCode(c+'a'.charCodeAt(0));
+    res=res+ch;
+  }
+  document.getElementById("de").value=res;
+}
+</script>
+
+
+<script>
+function ex_mod(x,y,p){
+    let res = 1;
+    x = x % p; 
+    if (x == 0) 
+      return 0; 
+    while (y > 0){    
+        if (y & 1)  
+            res = (res*x) % p;  
+        y = y>>1;
+        x = (x*x) % p;  
+    }  
+    return res; 
+}
+</script>
+
+
+<script>
+function generate(){
+  let p=document.getElementById("p").value;
+  let q=document.getElementById("q").value;
+  let n=p*q;
+  document.getElementById("n").value=n;
+  document.getElementById("phi").value=(p-1)*(q-1);
+  let e=get_coprime();
+  document.getElementById("e").value=e;
+  let d=select_d();
+  document.getElementById("d").value=d;
+  document.getElementById("pub").value="{"+e+","+n+"}";
+  document.getElementById("pri").value="{"+d+","+n+"}";
+}
+</script>
+
+<script>
+function gcd(a,b) {
+    if (b > a) {var temp = a; a = b; b = temp;}
+    while (true) {
+        if (b == 0) return a;
+        a %= b;
+        if (a == 0) return b;
+        b %= a;
+    }
+}
+</script>
+<script>
+function coprime(a,b) {
+  return (gcd(a,b)===1);
+}
+</script>
+<script>
+function get_coprime() {
+  let phi=document.getElementById("phi").value;
+  for(var i=2;i<phi;i+=1){
+    if(coprime(i,phi)==1){
+      return i;
+    }
+  }
+}
+</script>
+<script>
+function select_d() {
+  let e=document.getElementById("e").value;
+  let phi=document.getElementById("phi").value;
+  for(var d=1;d<=phi;d++){
+    if((d*e)%phi==1)
+      return d;
+  }
+  return -1;
+}
+</script>
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+<script>
+      window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+      ga('create', 'UA-136427840-2', 'auto');
+      ga('send', {
+           hitType: 'pageview',
+           page: location.pathname
+      });
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+  <!-- End Code RSA -->
+
+  
+  <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+</body>
+</html>
